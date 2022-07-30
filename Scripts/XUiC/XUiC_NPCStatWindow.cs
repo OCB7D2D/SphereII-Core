@@ -313,14 +313,14 @@ public class XUiC_NPCStatWindow : XUiController
 
     private float updateTime;
 
-    private string pointsAvailable;
-    private float lastDeficitValue;
-    private float currentValue;
-    private float xpFillSpeed;
-    private float lastValue;
-    private string expDeficitColor;
-    private string standardXPColor;
-    private string updatingXPColor;
+    private string pointsAvailable = string.Empty;
+    private float lastDeficitValue = 0f;
+    private float currentValue = 0f;
+    private float xpFillSpeed = 0f;
+    private float lastValue = 0f;
+    private string expDeficitColor = string.Empty;
+    private string standardXPColor = string.Empty;
+    private string updatingXPColor = string.Empty;
     private readonly CachedStringFormatter<string, int> skillPointsAvailableFormatter = new CachedStringFormatter<string, int>((string _s, int _i) => string.Format("{1}", _s, _i));
 }
 

@@ -24,7 +24,7 @@ namespace Harmony.TileEntities
      */
     public class TileEntityAlwaysActive
     {
-        private static readonly string AdvFeatureClass = "AdvancedTileEntities";
+        // private static readonly string AdvFeatureClass = "AdvancedTileEntities";
 
         [HarmonyPatch(typeof(TileEntity))]
         [HarmonyPatch("IsActive")]

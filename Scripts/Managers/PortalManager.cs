@@ -40,10 +40,10 @@ public class PortalItem
 }
 public class PortalManager
 {
-    private const float SAVE_TIME_SEC = 60f;
+    // private const float SAVE_TIME_SEC = 60f;
     private const string saveFile = "Portals.dat";
     private static byte Version = 1;
-    private float saveTime = 60f;
+    // private float saveTime = 60f;
     private ThreadManager.ThreadInfo dataSaveThreadInfo;
 
     private Dictionary<Vector3i, string> PortalMap = new Dictionary<Vector3i, string>();

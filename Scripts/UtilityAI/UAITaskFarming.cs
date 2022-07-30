@@ -11,7 +11,7 @@ namespace UAI
         private int range = 50;
         private bool hadBuff = false;
         private FarmPlotData _farmData;
-        private PlantData plantData;
+        // private PlantData plantData;
         private float timeOut = 100f;
         private string seed = "planted*1";
         private bool _hasSeed = false;
@@ -138,7 +138,7 @@ namespace UAI
             timeOut = 100f;
 
             _farmData = null;
-            plantData = null;
+            // plantData = null;
             _hasSeed = HasSeed(_context);
             var position = new Vector3i(_context.Self.position);
 

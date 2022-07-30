@@ -79,7 +79,7 @@ namespace UAI
                     //var stack = EntityUtilities.GetItemStackByTag(_context.Self.entityId, "medical");
                    //stack = EntityUtilities.GetItemByName(_context.Self.entityId, items);
                     
-                    var originalIndex = 0;
+                    // var originalIndex = 0;
 
                     // Heal the target
                     //GameManager.Instance.StartCoroutine(SimulateActionExecution(_context, entityAlive, 1, stack, null));

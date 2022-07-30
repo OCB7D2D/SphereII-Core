@@ -81,7 +81,7 @@ public class EntityAliveSDX : EntityTrader
     private string _strTitle;
 
     private TileEntityTrader _tileEntityTrader;
-    private TraderArea _traderArea;
+    // private TraderArea _traderArea;
 
     public ItemValue meleeWeapon = ItemClass.GetItem("meleeClubIron");
     public QuestJournal questJournal = new QuestJournal();
@@ -946,7 +946,7 @@ public class EntityAliveSDX : EntityTrader
         {
             base.OnUpdateLive();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
         }

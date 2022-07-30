@@ -69,10 +69,11 @@ public static class Sebastian
     public static void AddCaveToChunk(Chunk chunk)
     {
         // Populates the pois
-        var noise = SphereCache.GetFastNoise(chunk);
+        /*var noise = */ SphereCache.GetFastNoise(chunk);
 
         AddLevel(chunk, 5);
         return;
+        /*
         var MaxLevels = int.Parse(Configuration.GetPropertyValue(AdvFeatureClass, "MaxCaveLevels"));
         MaxLevels = 1;
         var depth = 10;
@@ -81,6 +82,7 @@ public static class Sebastian
             AddLevel(chunk, depth, x%2 == 0);
             depth += 8;
         }
+        */
     }
 
     // Helper method is check the prefab decorator first to see if its there, then create it if it does not exist.

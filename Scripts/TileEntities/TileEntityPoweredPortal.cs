@@ -13,7 +13,7 @@ public class TileEntityPoweredPortal : TileEntityPoweredBlock, ILockable, ITileE
 	private PlatformUserIdentifierAbs ownerID;
 	private List<PlatformUserIdentifierAbs> allowedUserIds;
 	private string password;
-    private bool isPowered;
+    // private bool isPowered;
 
     public TileEntityPoweredPortal(Chunk _chunk) : base(_chunk)
     {

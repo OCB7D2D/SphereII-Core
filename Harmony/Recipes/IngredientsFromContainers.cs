@@ -176,9 +176,10 @@ namespace SCore.Harmony.Recipes
                         if (lootTileEntity == null) continue;
 
                         int num = itemStack.count * _multiplier;
-                        for (int x = 0; x < num; x++)
+                        if (0 < num)
+                        // for (int x = 0; x < num; x++)
                         {
-                            if (lootTileEntity == null) break;
+                            // if (lootTileEntity == null) break;
                             for (int y = 0; y < lootTileEntity.items.Length; y++)
                             {
                                 var item = lootTileEntity.items[y];
@@ -189,7 +190,8 @@ namespace SCore.Harmony.Recipes
                                         return true;
                                 }
                             }
-                            break;
+                            // This breaks the loop always?
+                            // break;
                         }
                     }
 
@@ -216,10 +218,11 @@ namespace SCore.Harmony.Recipes
                         var lootTileEntity = tileEntity as TileEntityLootContainer;
                         if (lootTileEntity == null) continue;
 
-                        int num = itemStack.count * _multiplier;
-                        for (int x = 0; x < num; x++)
+                        if (0 < itemStack.count * _multiplier)
+                        // int num = itemStack.count * _multiplier;
+                        // for (int x = 0; x < num; x++)
                         {
-                            if (lootTileEntity == null) break;
+                            // if (lootTileEntity == null) break;
                             for (int y = 0; y < lootTileEntity.items.Length; y++)
                             {
                                 var item = lootTileEntity.items[y];
@@ -230,7 +233,8 @@ namespace SCore.Harmony.Recipes
                                         lootTileEntity.UpdateSlot(y, ItemStack.Empty.Clone());
                                 }
                             }
-                            break;
+                            // This breaks the loop always?
+                            // break;
                         }
                     }
 

@@ -5,8 +5,8 @@ namespace UAI
 {
     public class UAITaskLoot : UAITaskMoveToTarget
     {
-        private static readonly string AdvFeatureClass = "AdvancedTroubleshootingFeatures";
-        private static readonly string Feature = "UtilityAILoggingMin";
+        // private static readonly string AdvFeatureClass = "AdvancedTroubleshootingFeatures";
+        // private static readonly string Feature = "UtilityAILoggingMin";
 
         private string _targetTypes;
         private Vector3 _vector;

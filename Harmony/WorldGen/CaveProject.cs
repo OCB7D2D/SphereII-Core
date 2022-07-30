@@ -181,14 +181,14 @@ namespace Harmony.WorldGen
                 if (biome == null) return;
 
                 // Customize which spawning.xml entry to we want to use for spawns.
-                var caveType = "Cave";
+                // var caveType = "Cave";
                 // Search for the biome_Cave spawn group. If not found, load the generic Cave one.
                 var biomeSpawnEntityGroupList = BiomeSpawningClass.list[biome.m_sBiomeName + "_Cave"];
                 if (biomeSpawnEntityGroupList == null) biomeSpawnEntityGroupList = BiomeSpawningClass.list["Cave"];
                 // if we are below 30, look for the biome specific deep cave, then deep cave if its not set.
                 if (vector.y < 30)
                 {
-                    caveType = "DeepCave";
+                    // caveType = "DeepCave";
                     biomeSpawnEntityGroupList = BiomeSpawningClass.list[biome.m_sBiomeName + "_DeepCave"];
                     if (biomeSpawnEntityGroupList == null) biomeSpawnEntityGroupList = BiomeSpawningClass.list["DeepCave"];
                 }

@@ -58,7 +58,7 @@ public class SphereII_Locks
             LockPickAsset = DataLoader.LoadAsset<GameObject>(LockPrefab);
             lockPick = Object.Instantiate(LockPickAsset);
         }
-        catch( Exception ex)
+        catch (Exception)
         {
             Log.Out($"LockPrefab not valid. Falling back to vanilla.");
             return;
