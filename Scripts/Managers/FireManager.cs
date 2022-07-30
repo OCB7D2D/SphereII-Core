@@ -296,7 +296,7 @@ public class FireManager
     {
         BlockUtilitiesSDX.removeParticlesNetPackage(_blockPos);
         if ( FireMap.TryRemove(_blockPos, out var block) )
-            BlockUtilitiesSDX.addParticlesCenteredNetwork(smokeParticle, _blockPos);
+            BlockUtilitiesSDX.addParticlesRandomizedNetwork(smokeParticle, _blockPos);
     }
 
     // Add flammable blocks to the Fire Map
@@ -310,7 +310,7 @@ public class FireManager
         if (block.Block.Properties.Contains("FireParticle"))
             targetParticle = block.Block.Properties.GetString("FireParticle");
 
-        BlockUtilitiesSDX.addParticlesCenteredNetwork(targetParticle, _blockPos);
+        BlockUtilitiesSDX.addParticlesRandomizedNetwork(targetParticle, _blockPos);
 
         if (GameManager.Instance.World.IsWithinTraderArea(_blockPos))
             return;

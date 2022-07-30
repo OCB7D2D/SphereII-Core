@@ -136,6 +136,66 @@ public static class BlockUtilitiesSDX
 
     }
 
+    static readonly ulong Seed1 = OCB.StaticRandom.RandomSeed();
+    static readonly ulong Seed2 = OCB.StaticRandom.RandomSeed();
+
+    // Shifts are in absolute values (1 meaning one block)
+    static readonly OCB.CrookedVector3 RandomShift = new OCB.CrookedVector3(
+        new OCB.CrookedAxis(-0.25f, 0.25f, false),
+        new OCB.CrookedAxis(-0.25f, 0.25f, false),
+        new OCB.CrookedAxis(-0.25f, 0.25f, false));
+
+    // Rotations are in euler angles (degrees)
+    static readonly OCB.CrookedVector3 RandomRotation = new OCB.CrookedVector3(
+        new OCB.CrookedAxis(-35f, 35f, false),
+        new OCB.CrookedAxis(-35f, 35f, false),
+        new OCB.CrookedAxis(-35f, 35f, false));
+
+    public static void addParticlesRandomizedNetwork(string strParticleName, Vector3i position)
+    {
+        if (strParticleName == null || strParticleName == "")
+            strParticleName = "#@modfolder(0-SCore):Resources/PathSmoke.unity3d?P_PathSmoke_X";
+
+        if (strParticleName == "NoParticle")
+            return;
+
+        if (!ParticleEffect.IsAvailable(strParticleName))
+            ParticleEffect.RegisterBundleParticleEffect(strParticleName);
+
+        Vector3 centerPosition = EntityUtilities.CenterPosition(position);
+
+        var blockValue = GameManager.Instance.World.GetBlock(position);
+        Quaternion rotation = blockValue.Block.shape.GetRotation(blockValue);
+
+        ulong seed1 = Seed1;
+        OCB.StaticRandom.HashSeed(ref seed1, position.x);
+        OCB.StaticRandom.HashSeed(ref seed1, position.y);
+        OCB.StaticRandom.HashSeed(ref seed1, position.z);
+        centerPosition += RandomShift.GetVector(seed1);
+
+        ulong seed2 = Seed2;
+        OCB.StaticRandom.HashSeed(ref seed2, position.x);
+        OCB.StaticRandom.HashSeed(ref seed2, position.y);
+        OCB.StaticRandom.HashSeed(ref seed2, position.z);
+        rotation *= RandomRotation.GetRotation(seed2);
+
+        // var shif = RandomShift.GetVector(seed1);
+        // var rot = RandomRotation.GetVector(seed2);
+        // Log.Out("Got shift {0}, rot {1}", shift, rot);
+
+        var particle = new ParticleEffect(strParticleName, centerPosition, rotation, 1f, Color.white);
+        if (!GameManager.IsDedicatedServer)
+        {
+            GameManager.Instance.World.GetGameManager().SpawnBlockParticleEffect(position, particle);
+        }
+        if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
+        {
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleEffect>().Setup(particle, -1), false);
+            return;
+        }
+        SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleEffect>().Setup(particle, -1), false, -1, -1, -1, -1);
+
+    }
     public static void removeParticlesNetPackage(Vector3i position)
     {
         if (!GameManager.IsDedicatedServer)
