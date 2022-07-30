@@ -1,4 +1,6 @@
 using HarmonyLib;
+using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 namespace Harmony.Blocks
 {
@@ -23,5 +25,30 @@ namespace Harmony.Blocks
                     ParticleEffect.RegisterBundleParticleEffect(strParticleName);
             }
         }
+
+        [HarmonyPatch(typeof(GameManager))]
+        [HarmonyPatch("spawnParticleEffect")]
+        public class spawnParticleEffect
+        {
+            static int count = 4;
+            public static void Postfix(ref Transform __result)
+            {
+                if (__result?.GetComponentInChildren<Light>() is Light light)
+                {
+                    if (count == 4)
+                    {
+                        count = 0;
+                    }
+                    else
+                    {
+                        light.enabled = false;
+                        light.gameObject.transform.parent = null;
+                        Object.Destroy(light.gameObject);
+                        count += 1;
+                    }
+                }
+            }
+        }
+
     }
 }
