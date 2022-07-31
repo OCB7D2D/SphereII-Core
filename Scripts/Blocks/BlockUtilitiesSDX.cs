@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -151,6 +152,25 @@ public static class BlockUtilitiesSDX
         new OCB.CrookedAxis(-35f, 35f, false),
         new OCB.CrookedAxis(-35f, 35f, false));
 
+    private static IEnumerator SpawnParticleAfterDelay(float time, Vector3i position, ParticleEffect particle)
+    {
+        yield return new WaitForSeconds(time);
+        if (!GameManager.IsDedicatedServer)
+        {
+            GameManager.Instance.World.GetGameManager().SpawnBlockParticleEffect(position, particle);
+        }
+        if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
+        {
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleEffect>().Setup(particle, -1), false);
+        }
+        else
+        {
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleEffect>().Setup(particle, -1), false, -1, -1, -1, -1);
+        }
+    }
+
+    private static GameRandom random = GameRandomManager.Instance.CreateGameRandom();
+
     public static void addParticlesRandomizedNetwork(string strParticleName, Vector3i position)
     {
         if (strParticleName == null || strParticleName == "")
@@ -179,21 +199,12 @@ public static class BlockUtilitiesSDX
         OCB.StaticRandom.HashSeed(ref seed2, position.z);
         rotation *= RandomRotation.GetRotation(seed2);
 
-        // var shif = RandomShift.GetVector(seed1);
+        // var shift = RandomShift.GetVector(seed1);
         // var rot = RandomRotation.GetVector(seed2);
         // Log.Out("Got shift {0}, rot {1}", shift, rot);
 
-        var particle = new ParticleEffect(strParticleName, centerPosition, rotation, 1f, Color.white);
-        if (!GameManager.IsDedicatedServer)
-        {
-            GameManager.Instance.World.GetGameManager().SpawnBlockParticleEffect(position, particle);
-        }
-        if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-        {
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleEffect>().Setup(particle, -1), false);
-            return;
-        }
-        SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleEffect>().Setup(particle, -1), false, -1, -1, -1, -1);
+        GameManager.Instance.StartCoroutine(SpawnParticleAfterDelay(random.RandomRange(3.2f), position,
+            new ParticleEffect(strParticleName, centerPosition, rotation, 1f, Color.white)));
 
     }
     public static void removeParticlesNetPackage(Vector3i position)
