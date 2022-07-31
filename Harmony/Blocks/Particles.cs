@@ -30,12 +30,13 @@ namespace Harmony.Blocks
         [HarmonyPatch("spawnParticleEffect")]
         public class spawnParticleEffect
         {
-            static int count = 4;
+            static readonly int odds = 4;
+            static int count = odds;
             public static void Postfix(ref Transform __result)
             {
                 if (__result?.GetComponentInChildren<Light>() is Light light)
                 {
-                    if (count == 4)
+                    if (count == odds)
                     {
                         count = 0;
                     }

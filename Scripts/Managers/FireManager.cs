@@ -12,9 +12,11 @@ public class FireManager
     private static ConcurrentDictionary<Vector3i, BlockValue> FireMap = new ConcurrentDictionary<Vector3i, BlockValue>();
     public static ConcurrentDictionary<Vector3i, float> ExtinguishPositions = new ConcurrentDictionary<Vector3i, float>();
     private float checkTime = 120f;
+    private float checkTimeLights = 0.8f;
     private float currentTime = 0f;
+    private float currentTimeLights = 0f;
     private float fireDamage = 1f;
-    private GameRandom random;
+    private GameRandom random = new GameRandom();
     private float heatMapStrength = 0f;
 
     private string fireParticle = Configuration.GetPropertyValue(AdvFeatureClass, "FireParticle");
@@ -65,6 +67,7 @@ public class FireManager
         Load();
         CheckBlocks();
         ModEvents.GameUpdate.RegisterHandler(new Action(this.FireUpdate));
+        ModEvents.GameUpdate.RegisterHandler(new Action(this.LightsUpdate));
         ModEvents.GameShutdown.RegisterHandler(new Action(this.Save));
     }
 
@@ -104,6 +107,7 @@ public class FireManager
             }
         }
     }
+
     public void FireUpdate()
     {
         // No fires, no updates.
@@ -116,6 +120,76 @@ public class FireManager
             if (currentTime > 0f) return;
 
             CheckBlocks();
+        }
+    }
+
+    public void LightsUpdate()
+    {
+
+        ShutoffLights();
+
+        // No fires, no updates.
+        if (FireMap.Count == 0) return;
+
+        // Make sure to only run it once
+        lock (locker)
+        {
+            currentTimeLights -= Time.deltaTime;
+            if (currentTimeLights > 0f) return;
+            currentTimeLights = checkTimeLights;
+
+            CheckLights();
+        }
+    }
+
+    static readonly int MaxLights = 32;
+
+    static readonly HashSet<Light> Shutoff =
+        new HashSet<Light>();
+
+
+    public void ShutoffLights()
+    {
+        if (Shutoff.Count == 0) return;
+        if (GameManager.Instance.IsPaused()) return;
+        Shutoff.RemoveWhere(light => light == null);
+        foreach (var light in Shutoff)
+        {
+            light.intensity -= Time.deltaTime;
+            // Log.Out("Toning down {0}", light.intensity);
+            if (light.intensity > 0f) continue;
+            // Log.Out("Culling light out of this world");
+            light.gameObject.transform.parent = null;
+            UnityEngine.Object.Destroy(light.gameObject);
+        }
+        Shutoff.RemoveWhere(light => light.intensity <= 0f);
+    }
+
+    public void CheckLights()
+    {
+        if (GameManager.Instance.IsPaused()) return;
+        // ToDo: avoid unnecessary allocations (re-use objects)
+        var allLights = UnityEngine.Object.FindObjectsOfType<Light>();
+        if (allLights.Length <= MaxLights) return;
+        List<Light> curLights = new List<Light>();
+        for (int n = 0; n < allLights.Length; n += 1)
+        {
+            if (allLights[n].name != "FireLight") continue;
+            if (Shutoff.Contains(allLights[n])) continue;
+            curLights.Add(allLights[n]);
+        }
+        Log.Out("Detect currently {0} lights, {1} being culled",
+            curLights.Count, Shutoff.Count);
+        // Do nothing if we are (or will be) within limits
+        if (curLights.Count <= MaxLights) return;
+        // Otherwise choose more lights to shutoff
+        while (curLights.Count >= MaxLights)
+        {
+            int idx = random.RandomRange(curLights.Count);
+            if (Shutoff.Contains(curLights[idx])) continue;
+            // Log.Out("Selected {0} for culling", idx);
+            Shutoff.Add(curLights[idx]);
+            curLights.RemoveAt(idx);
         }
     }
 
